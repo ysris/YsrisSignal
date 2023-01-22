@@ -1,5 +1,6 @@
-# YsrisSignal : Récupération des cours des crypto-monnaies avec Binance API et stockage en base de données
-## Cet article présente une méthode pour récupérer les cours des crypto-monnaies en utilisant l'API Binance et en les stockant dans une base de données SQL Server. Nous utilisons également des bibliothèques telles que Newtonsoft.Json et Dapper pour faciliter le développement de l'application et implémentons le design pattern Visitor pour améliorer la qualité du code.
+# YsrisSignal 
+##Récupération des cours des crypto-monnaies avec Binance API et stockage en base de données
+### Cet article présente une méthode pour récupérer les cours des crypto-monnaies en utilisant l'API Binance et en les stockant dans une base de données SQL Server. Nous utilisons également des bibliothèques telles que Newtonsoft.Json et Dapper pour faciliter le développement de l'application et implémentons le design pattern Visitor pour améliorer la qualité du code.
 
 L'analyse des cours des crypto-monnaies est un élément crucial pour les traders et les investisseurs dans ce marché en constante évolution. Il est donc primordial d'avoir un accès en temps réel aux prix des différentes crypto-monnaies. C'est pourquoi, dans cet article, nous allons vous présenter une méthode pour récupérer les cours de différentes crypto-monnaies comme le Bitcoin (BTC), Monero (XMR) et l'Euro (EUR) contre le Dollar américain (USDT), à des intervalles d'une heure et quatre heures, en utilisant le langage de programmation C#.
 
