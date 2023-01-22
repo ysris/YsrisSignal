@@ -1,3 +1,5 @@
+using Skender.Stock.Indicators;
+
 public class TimeSerieItem
 {
     public static List<string> Instruments { get; set; }
@@ -10,6 +12,8 @@ public class TimeSerieItem
     public List<decimal?> SenkouA { get; set; }
     public List<decimal?> SenkouB { get; set; }
     public List<decimal?> Chikou { get; set; }
+    public List<string> Indicator { get; set; }
+
 
     public override bool Equals(object obj)
     {
@@ -34,6 +38,7 @@ public class TimeSerieItem
         string senkouA = "";
         string senkouB = "";
         string chikou = "";
+        string indicator = "";
         if (Tenkan.Count > 0)
         {
             tenkan = Tenkan[Tenkan.Count - 1].ToString();
@@ -59,7 +64,12 @@ public class TimeSerieItem
             chikou = Chikou[Chikou.Count - 1].ToString();
         }
 
+        if (Indicator.Count > 0)
+        {
+            indicator = Indicator[Indicator.Count - 1].ToString();
+        }
+
         return
-            $"Symbol: {Symbol}, Interval: {Interval}, Price: {Price}, Date: {Date}, ConversionLine: {tenkan}, BaseLine: {kijun}, LeadingSpanA: {senkouA}, LeadingSpanB: {senkouB}, LaggingLine: {chikou}";
+            $"Symbol: {Symbol}, Interval: {Interval}, Price: {Price}, Date: {Date}, ConversionLine: {tenkan}, BaseLine: {kijun}, LeadingSpanA: {senkouA}, LeadingSpanB: {senkouB}, LaggingLine: {chikou}, Indicator: {indicator}";
     }
 }

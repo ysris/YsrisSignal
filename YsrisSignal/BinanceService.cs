@@ -4,7 +4,6 @@ using Skender.Stock.Indicators;
 
 public class BinanceService
 {
-
     public void Accept(IVisitor visitor)
     {
         visitor.Visit(this);
@@ -12,14 +11,13 @@ public class BinanceService
 
     public List<TimeSerieItem> GetPrices()
     {
-        var timeSerieItems = new List<TimeSerieItem>();
-        foreach (string instrument in TimeSerieItem.Instruments)
-        {
-            var timeSerie = GetPrice(instrument, "1h");
-            timeSerieItems.Add(timeSerie);
-        }
-
-        return timeSerieItems;
+        return TimeSerieItem.Instruments
+            .SelectMany(instrument => new List<TimeSerieItem>
+            {
+                GetPrice(instrument, "1h"),
+                GetPrice(instrument, "4h")
+            })
+            .ToList();
     }
 
     public TimeSerieItem GetPrice(string symbol, string interval)
@@ -28,7 +26,7 @@ public class BinanceService
         Accept(priceVisitor);
         var ichimokuVisitor = new IchimokuVisitor();
         Accept(ichimokuVisitor);
-        return new TimeSerieItem
+        var timeSerieItem = new TimeSerieItem
         {
             Symbol = symbol,
             Interval = interval,
@@ -38,8 +36,10 @@ public class BinanceService
             Kijun = ichimokuVisitor.Kijun,
             SenkouA = ichimokuVisitor.SenkouA,
             SenkouB = ichimokuVisitor.SenkouB,
-            Chikou = ichimokuVisitor.Chikou
+            Chikou = ichimokuVisitor.Chikou,
+            Indicator = ichimokuVisitor.Indicator,
         };
+        return timeSerieItem;
     }
 
     public List<Quote> TimeSerie { get; set; }
