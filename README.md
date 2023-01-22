@@ -1,5 +1,5 @@
 # YsrisSignal 
-## Récupération et stockage en base de données des cours des crypto-monnaies avec Binance API 
+## Récupération et stockage des cours des crypto-monnaies
 ### Cet article présente une méthode pour récupérer les cours des crypto-monnaies en utilisant l'API Binance et en les stockant dans une base de données SQL Server. 
 ### Nous utilisons également des bibliothèques telles que Newtonsoft.Json et Dapper pour faciliter le développement de l'application. 
 ### Nous implémentons le design pattern Visitor pour améliorer la qualité du code.
