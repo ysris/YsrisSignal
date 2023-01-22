@@ -12,7 +12,7 @@ public class TimeSerieItem
     public List<decimal?> SenkouA { get; set; }
     public List<decimal?> SenkouB { get; set; }
     public List<decimal?> Chikou { get; set; }
-    public List<string> Indicator { get; set; }
+    public List<string?> Indicator { get; set; }
 
 
     public override bool Equals(object obj)
@@ -70,6 +70,6 @@ public class TimeSerieItem
         }
 
         return
-            $"Symbol: {Symbol}, Interval: {Interval}, Price: {Price}, Date: {Date}, ConversionLine: {tenkan}, BaseLine: {kijun}, LeadingSpanA: {senkouA}, LeadingSpanB: {senkouB}, LaggingLine: {chikou}, Indicator: {indicator}";
+            $"{Symbol?.PadRight(10)} | {Interval} | {indicator?.PadRight(10)}  | Price {Price.ToString()?.PadLeft(15)} | Date {Date}, Indicator ConversionLine: {tenkan}, BaseLine: {kijun}, LeadingSpanA: {senkouA}, LeadingSpanB: {senkouB}, LaggingLine: {chikou}";
     }
 }

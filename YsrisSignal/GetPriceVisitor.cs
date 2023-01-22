@@ -28,7 +28,11 @@ public class GetPriceVisitor : IVisitor
                 High = prices[i][2].Value<decimal>(),
                 Low = prices[i][3].Value<decimal>(),
                 Close = prices[i][4].Value<decimal>(),
-                Date = DateTimeOffset.FromUnixTimeMilliseconds(prices[i][6].Value<long>()).UtcDateTime
+                Date = DateTimeOffset.FromUnixTimeMilliseconds(prices[i][6].Value<long>()).UtcDateTime.AddHours(
+                    Interval == "1h" ? -1 :
+                    Interval == "4h" ? -4 :
+                    throw new NotImplementedException()
+                ).AddSeconds(1)
             });
         }
 
@@ -37,6 +41,4 @@ public class GetPriceVisitor : IVisitor
 
         service.TimeSerie = ts;
     }
-
-    
 }
