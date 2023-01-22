@@ -1,4 +1,4 @@
-# YsrisSignal 
+# 🏛️🪙YsrisSignal 
 ## Récupération et stockage des cours des crypto-monnaies
 ### Un exemple de récupération des cours des crypto-monnaies en utilisant l'API Binance et en les stockant dans une base de données SQL Server. 
 ### Nous utilisons également des bibliothèques telles que Newtonsoft.Json et Dapper pour faciliter le développement de l'application. 
