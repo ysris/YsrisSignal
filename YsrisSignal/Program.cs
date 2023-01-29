@@ -1,19 +1,13 @@
-﻿public class Program
+﻿namespace YsrisSignal;
+
+public static class Program
 {
     public static void Main(string[] args)
     {
-        TimeSerieItem.Instruments = new List<string> { "BTCUSDT", "XMRUSDT", "DOGEUSDT", "ETHUSDT", "LTCUSDT" };
-        var binanceService = new BinanceService();
-
+        var strategy = new YsrisStrategy("BTCUSDT", "XMRUSDT", "DOGEUSDT", "ETHUSDT", "LTCUSDT");
         while (true)
         {
-            var timeSerieItems = binanceService.GetPrices();
-            foreach (var timeSerie in timeSerieItems)
-            {
-                Console.WriteLine(timeSerie);
-                //TimeSerieItemDal.Store(timeSerie);
-            }
-
+            strategy.Run().ForEach(Console.WriteLine);
             Thread.Sleep(3600000);
         }
     }
