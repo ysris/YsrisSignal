@@ -8,41 +8,54 @@ public class YsrisStrategy
 {
     public YsrisStrategy(params string[] args)
     {
-        Instruments = args.ToList();
+        Instruments = args.Select(symbol => new Instrument(symbol)).ToList();
     }
 
-    public static List<string> Instruments { get; set; }
+    public static List<Instrument> Instruments { get; set; }
 
-    public List<YsrisSignal.Instrument> Run()
+    /// <summary>
+    /// Run strategy
+    /// </summary>
+    public List<Instrument> Run()
     {
-        return Instruments.Select(GetForInstrument).ToList();
+        return Instruments.Select(Run).ToList();
     }
 
-    public YsrisSignal.Instrument GetForInstrument(string symbol)
+    /// <summary>
+    /// Run strategy for an instrument
+    /// </summary>
+    public Instrument Run(Instrument instrument)
     {
-        return new Instrument
-        {
-            Symbol = symbol,
-            FourHourSignal = GetTimeSerie(symbol, "4h"),
-            OneHourSignal = GetTimeSerie(symbol, "1h"),
-        };
+        instrument.FourHourSignal = Run(instrument, "4h");
+        instrument.OneHourSignal = Run(instrument, "1h");
+        return instrument;
     }
 
-    public List<TimeSerieItem> GetTimeSerie(string symbol, string interval)
+    /// <summary>
+    /// Run strategy for an instrument interval
+    /// </summary>
+    public List<TimeSerieItem> Run(Instrument instrument, string interval)
     {
-        // Get time serie
-
-        var client = new WebClient();
-        var json = client.DownloadString("https://api.binance.com/api/v3/klines?symbol=" + symbol + "&interval=" + interval);
-        var prices = JArray.Parse(json);
-
-        var ts = prices.Select(a => GetTimeSerieItem(a, interval)).ToList();
-        ts = GetIchimoku(ts);
+        var ts = GetTimeSerie(instrument, interval);
         ts = GetIndicator(ts);
-
         return ts;
     }
 
+    /// <summary>
+    /// Get OHLC time serie for instrument interval
+    /// </summary>
+    public List<TimeSerieItem> GetTimeSerie(Instrument instrument, string interval)
+    {
+        var client = new WebClient();
+        var json = client.DownloadString("https://api.binance.com/api/v3/klines?symbol=" + instrument.Symbol + "&interval=" + interval);
+        var prices = JArray.Parse(json);
+        var ts = prices.Select(a => GetTimeSerieItem(a, interval)).ToList();
+        return ts;
+    }
+
+    /// <summary>
+    /// Parse time serie item
+    /// </summary>
     public TimeSerieItem GetTimeSerieItem(JToken price, string interval)
     {
         return new TimeSerieItem
@@ -59,42 +72,18 @@ public class YsrisStrategy
         };
     }
 
-    private List<TimeSerieItem> GetIchimoku(List<TimeSerieItem> ts)
-    {
-        var indicatorTs = Indicator.GetIchimoku(ts);
-        return ts.Zip(indicatorTs, GetIchimokuItem).ToList();
-    }
-
-    private TimeSerieItem GetIchimokuItem(TimeSerieItem tsitemt, IchimokuResult resultitem)
-    {
-        tsitemt.Tenkan = resultitem.TenkanSen;
-        tsitemt.Kijun = resultitem.KijunSen;
-        tsitemt.SenkouA = resultitem.SenkouSpanA;
-        tsitemt.SenkouB = resultitem.SenkouSpanB;
-        tsitemt.Chikou = resultitem.ChikouSpan;
-        return tsitemt;
-    }
-
+    /// <summary>
+    /// Get indicators for a time serie
+    /// </summary>
     private List<TimeSerieItem> GetIndicator(List<TimeSerieItem> ts)
     {
-        ts = ts.Select(GetIndicatorItem).ToList();
+        var indicatorTs = ts.GetIchimoku();
+        ts = ts.Zip(
+            indicatorTs,
+            (timeSerieItem, resultitem) => timeSerieItem
+                .SetFrom(resultitem)
+                .RunIndicator()
+        ).ToList();
         return ts;
-    }
-
-    private TimeSerieItem GetIndicatorItem(TimeSerieItem ichimoku)
-    {
-        if (ichimoku.SenkouA == null || ichimoku.Tenkan == null || ichimoku.Kijun == null)
-            return ichimoku;
-
-        var indicatorValue = ichimoku.Close - ichimoku.SenkouA.Value;
-        var kijunTenkan = ichimoku.Kijun.Value - ichimoku.Tenkan.Value;
-        if (indicatorValue > 0 && kijunTenkan > 0)
-            ichimoku.Indicator = "Buy";
-        else if (indicatorValue < 0 && kijunTenkan < 0)
-            ichimoku.Indicator = "Sell";
-        else
-            ichimoku.Indicator = "Neutral";
-
-        return ichimoku;
     }
 }

@@ -1,10 +1,14 @@
-﻿using System.Text.Json.Nodes;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace YsrisSignal;
 
 public class Instrument
 {
+    public Instrument(string symbol)
+    {
+        Symbol = symbol;
+    }
+
     public string Symbol { get; set; }
     public List<TimeSerieItem> FourHourSignal { get; set; }
     public List<TimeSerieItem> OneHourSignal { get; set; }
